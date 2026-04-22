@@ -1,12 +1,17 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addMedicine } from "../redux/medicineSlice";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addMedicine, updateMedicine } from "../redux/medicineSlice";
+import { useNavigate, useParams } from "react-router-dom";
 import { Plus, Trash2, Pill, Clock, AlertTriangle, ArrowRight } from "lucide-react";
 
 function AddMedicine() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  const existingMedicine = useSelector(state => 
+    id ? state.medicines.medicines.find(m => m.id === id) : null
+  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -16,6 +21,19 @@ function AddMedicine() {
     stock: "",
     refillThreshold: "",
   });
+
+  useEffect(() => {
+    if (existingMedicine) {
+      setFormData({
+        name: existingMedicine.name,
+        dosage: existingMedicine.dosage,
+        frequency: existingMedicine.frequency,
+        times: existingMedicine.times || ["08:00"],
+        stock: existingMedicine.stock,
+        refillThreshold: existingMedicine.refillThreshold,
+      });
+    }
+  }, [existingMedicine]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,13 +57,17 @@ function AddMedicine() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(
-      addMedicine({
-        ...formData,
-        stock: parseInt(formData.stock) || 0,
-        refillThreshold: parseInt(formData.refillThreshold) || 0,
-      })
-    );
+    const payload = {
+      ...formData,
+      stock: parseInt(formData.stock) || 0,
+      refillThreshold: parseInt(formData.refillThreshold) || 0,
+    };
+
+    if (id) {
+      dispatch(updateMedicine({ ...payload, id }));
+    } else {
+      dispatch(addMedicine(payload));
+    }
     navigate("/medicines");
   };
 
@@ -54,9 +76,11 @@ function AddMedicine() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
           <Pill className="text-blue-500 dark:text-blue-400 w-8 h-8" />
-          Add New Medicine
+          {id ? "Edit Medicine" : "Add New Medicine"}
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-2">Enter the details of your medication to track it automatically.</p>
+        <p className="text-slate-500 dark:text-slate-400 mt-2">
+          {id ? "Update the details of your medication." : "Enter the details of your medication to track it automatically."}
+        </p>
       </div>
 
       <div className="glass-panel rounded-2xl p-6 md:p-8 border-transparent dark:border-slate-800 transition-colors duration-300">
@@ -177,7 +201,7 @@ function AddMedicine() {
               type="submit"
               className="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-medium py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30"
             >
-              Save Medication
+              {id ? "Save Changes" : "Save Medication"}
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>

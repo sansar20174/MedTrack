@@ -141,7 +141,7 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-[#1e293b] rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-800 transition-colors duration-300">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-700 transition-colors duration-300">
             <div className="flex justify-between items-start mb-8">
               <div>
                 <h2 className="text-[22px] font-extrabold text-[#1a202c] dark:text-white flex items-center gap-3">
@@ -184,7 +184,7 @@ function Dashboard() {
                       key={`${item.med.id}-${item.time}-${idx}`}
                       className={`flex items-center justify-between p-5 rounded-2xl transition-all border ${
                         item.isTaken 
-                          ? 'bg-[#ecfdf5] dark:bg-emerald-900/20 border-[#d1fae5] dark:border-emerald-900/50' 
+                          ? 'bg-[#ecfdf5] dark:bg-emerald-500/10 border-[#d1fae5] dark:border-emerald-500/20' 
                           : 'bg-white dark:bg-slate-800 border-[#e2e8f0] dark:border-slate-700 shadow-sm dark:shadow-none'
                       }`}
                     >
@@ -218,7 +218,7 @@ function Dashboard() {
         </div>
 
         <div className="space-y-12">
-          <div className="bg-white dark:bg-[#1e293b] rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-800 transition-colors duration-300">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-700 transition-colors duration-300">
             <h2 className="text-[20px] font-extrabold text-[#1a202c] dark:text-white flex items-center gap-3 mb-6">
               <AlertTriangle className="w-6 h-6 text-[#f59e0b]" strokeWidth={2.5} />
               Refill Alerts
@@ -233,7 +233,7 @@ function Dashboard() {
             ) : (
               <div className="space-y-3">
                 {lowStockMeds.map(med => (
-                  <div key={med.id} className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-100 dark:border-amber-900/50">
+                  <div key={med.id} className="p-4 bg-amber-50 dark:bg-amber-500/10 rounded-2xl border border-amber-100 dark:border-amber-500/20">
                     <h3 className="font-bold text-amber-900 dark:text-amber-500">{med.name}</h3>
                     <div className="flex justify-between items-center mt-2">
                       <p className="text-sm text-amber-700 dark:text-amber-600 font-medium">Only {med.stock} left</p>
@@ -270,7 +270,7 @@ function Dashboard() {
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white dark:bg-[#1e293b] rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-800 transition-colors duration-300">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-700 transition-colors duration-300">
             <h3 className="text-[17px] font-bold text-[#1a202c] dark:text-white mb-6 text-center">Today's Status</h3>
             <div className="h-48 relative">
               <Doughnut 
@@ -287,14 +287,14 @@ function Dashboard() {
             </div>
           </div>
           
-          <div className="bg-white dark:bg-[#1e293b] rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-800 transition-colors duration-300">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-700 transition-colors duration-300">
             <h3 className="text-[17px] font-bold text-[#1a202c] dark:text-white mb-6">Current Stock Levels</h3>
             <div className="h-48 relative">
               <Bar data={stockData} options={chartOptions} />
             </div>
           </div>
 
-          <div className="bg-white dark:bg-[#1e293b] rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-800 transition-colors duration-300">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-700 transition-colors duration-300">
             <h3 className="text-[17px] font-bold text-[#1a202c] dark:text-white mb-6">7-Day Usage Trend</h3>
             <div className="h-48 relative">
               <Line data={lineData} options={chartOptions} />

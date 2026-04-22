@@ -26,10 +26,11 @@ function Navbar() {
     { name: "Dashboard", path: "/" },
     { name: "My Medicines", path: "/medicines" },
     { name: "Add Medicine", path: "/add-medicine" },
+    { name: "API Data", path: "/api-data" },
   ];
 
   return (
-    <header className="bg-white dark:bg-[#0f172a] border-b border-slate-100 dark:border-slate-800 transition-colors duration-300">
+    <header className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
         {/* Logo Section */}
         <Link to="/" className="flex items-center gap-4">

@@ -3,6 +3,8 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import AddMedicine from "./pages/AddMedicine";
 import Medicines from "./pages/Medicines";
+import ApiData from "./pages/ApiData";
+import MedicineSearch from "./components/MedicineSearch";
 import "./App.css";
 
 function App() {
@@ -14,7 +16,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/add-medicine" element={<AddMedicine />} />
+            <Route path="/edit-medicine/:id" element={<AddMedicine />} />
             <Route path="/medicines" element={<Medicines />} />
+            <Route path="/api-data" element={<ApiData />} />
+            <Route path="/medicine-search" element={<MedicineSearch />} />
           </Routes>
         </main>
       </div>
