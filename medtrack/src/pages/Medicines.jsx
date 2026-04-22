@@ -14,14 +14,14 @@ function Medicines() {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in transition-colors duration-300">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-            <Activity className="text-indigo-500 w-8 h-8" />
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
+            <Activity className="text-indigo-500 dark:text-indigo-400 w-8 h-8" />
             My Medicines
           </h1>
-          <p className="text-slate-500 mt-2">Manage your medications and check their current stock.</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-2">Manage your medications and check their current stock.</p>
         </div>
         <Link
           to="/add-medicine"
@@ -33,15 +33,15 @@ function Medicines() {
       </div>
 
       {medicines.length === 0 ? (
-        <div className="glass-panel rounded-3xl p-12 text-center border border-slate-200">
-          <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Pill className="w-10 h-10 text-indigo-400" />
+        <div className="glass-panel rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-700">
+          <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Pill className="w-10 h-10 text-indigo-400 dark:text-indigo-500" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-800 mb-2">No medicines added yet</h3>
-          <p className="text-slate-500 mb-6 max-w-sm mx-auto">Start tracking your medications by adding your first one.</p>
+          <h3 className="text-xl font-semibold text-slate-800 dark:text-white mb-2">No medicines added yet</h3>
+          <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">Start tracking your medications by adding your first one.</p>
           <Link
             to="/add-medicine"
-            className="inline-flex bg-white text-indigo-600 border border-indigo-200 hover:border-indigo-300 hover:bg-indigo-50 px-6 py-2.5 rounded-xl font-medium transition-all"
+            className="inline-flex bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-slate-700 px-6 py-2.5 rounded-xl font-medium transition-all"
           >
             Add Medicine
           </Link>
@@ -51,7 +51,6 @@ function Medicines() {
           {medicines.map((med) => {
             const isLowStock = med.stock <= med.refillThreshold;
             
-            // Refill Prediction Logic: days_left = total_quantity / daily_dose
             let pillsPerDay = 0;
             if (med.frequency === "Daily") pillsPerDay = med.times.length;
             else if (med.frequency === "Weekly") pillsPerDay = med.times.length / 7;
@@ -68,24 +67,24 @@ function Medicines() {
             }
             
             return (
-              <div key={med.id} className="glass-panel rounded-2xl p-6 relative group overflow-hidden border border-slate-200 hover:border-indigo-300 hover:shadow-xl transition-all duration-300">
+              <div key={med.id} className="glass-panel rounded-2xl p-6 relative group overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-xl transition-all duration-300">
                 {isLowStock && (
                   <div className="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
                 )}
                 
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-xl ${isLowStock ? 'bg-amber-100 text-amber-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                    <div className={`p-3 rounded-xl ${isLowStock ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-500' : 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400'}`}>
                       <Pill className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-slate-800">{med.name}</h3>
-                      <p className="text-sm text-slate-500 font-medium">{med.dosage}</p>
+                      <h3 className="font-bold text-lg text-slate-800 dark:text-white">{med.name}</h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{med.dosage}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => handleDelete(med.id)}
-                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-5 h-5" />
@@ -94,16 +93,16 @@ function Medicines() {
 
                 <div className="space-y-3 mt-5">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-500">Frequency</span>
-                    <span className="font-medium text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full">{med.frequency}</span>
+                    <span className="text-slate-500 dark:text-slate-400">Frequency</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">{med.frequency}</span>
                   </div>
                   
                   {med.frequency !== "As Needed" && (
                     <div className="flex justify-between items-start text-sm">
-                      <span className="text-slate-500">Times</span>
+                      <span className="text-slate-500 dark:text-slate-400">Times</span>
                       <div className="flex flex-wrap justify-end gap-1 max-w-[60%]">
                         {med.times.map((t, i) => (
-                          <span key={i} className="font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                          <span key={i} className="font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md border border-indigo-100 dark:border-indigo-800">
                             {t}
                           </span>
                         ))}
@@ -111,27 +110,27 @@ function Medicines() {
                     </div>
                   )}
 
-                  <div className="pt-3 mt-3 border-t border-slate-100">
+                  <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-700/50">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-slate-500">Stock Remaining</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">Stock Remaining</span>
                       <div className="flex items-center gap-2">
                         {isLowStock && (
                           <AlertCircle className="w-4 h-4 text-amber-500" />
                         )}
-                        <span className={`font-bold text-lg ${isLowStock ? 'text-amber-600' : 'text-slate-700'}`}>
-                          {med.stock} <span className="text-sm font-normal text-slate-400">units</span>
+                        <span className={`font-bold text-lg ${isLowStock ? 'text-amber-600 dark:text-amber-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                          {med.stock} <span className="text-sm font-normal text-slate-400 dark:text-slate-500">units</span>
                         </span>
                       </div>
                     </div>
                     
                     {pillsPerDay > 0 && (
-                      <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                        <span className="text-xs text-slate-500 flex items-center gap-1.5">
-                          <CalendarClock className="w-3.5 h-3.5 text-blue-500" />
+                      <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-700/50">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                          <CalendarClock className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
                           Est. Refill Date
                         </span>
-                        <span className="text-sm font-bold text-slate-700">
-                          {refillDateStr} <span className="text-xs font-normal text-slate-400">({daysLeftStr})</span>
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                          {refillDateStr} <span className="text-xs font-normal text-slate-400 dark:text-slate-500">({daysLeftStr})</span>
                         </span>
                       </div>
                     )}

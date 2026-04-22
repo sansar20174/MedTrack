@@ -50,20 +50,20 @@ function AddMedicine() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto animate-fade-in">
+    <div className="max-w-2xl mx-auto animate-fade-in transition-colors duration-300">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-          <Pill className="text-blue-500 w-8 h-8" />
+        <h1 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
+          <Pill className="text-blue-500 dark:text-blue-400 w-8 h-8" />
           Add New Medicine
         </h1>
-        <p className="text-slate-500 mt-2">Enter the details of your medication to track it automatically.</p>
+        <p className="text-slate-500 dark:text-slate-400 mt-2">Enter the details of your medication to track it automatically.</p>
       </div>
 
-      <div className="glass-panel rounded-2xl p-6 md:p-8">
+      <div className="glass-panel rounded-2xl p-6 md:p-8 border-transparent dark:border-slate-800 transition-colors duration-300">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Medicine Name</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Medicine Name</label>
               <input
                 required
                 type="text"
@@ -71,12 +71,12 @@ function AddMedicine() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. Paracetamol"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-white focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all outline-none"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Dosage</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Dosage</label>
               <input
                 required
                 type="text"
@@ -84,18 +84,18 @@ function AddMedicine() {
                 value={formData.dosage}
                 onChange={handleChange}
                 placeholder="e.g. 500mg"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-white focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all outline-none"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Frequency</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Frequency</label>
             <select
               name="frequency"
               value={formData.frequency}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none appearance-none"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-white focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all outline-none appearance-none"
             >
               <option value="Daily">Daily</option>
               <option value="Weekly">Weekly</option>
@@ -104,9 +104,9 @@ function AddMedicine() {
           </div>
 
           {formData.frequency !== "As Needed" && (
-            <div className="space-y-3 p-5 rounded-xl bg-blue-50/50 border border-blue-100">
-              <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-                <Clock className="w-4 h-4 text-blue-500" />
+            <div className="space-y-3 p-5 rounded-xl bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/50">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-blue-500 dark:text-blue-400" />
                 Reminder Times
               </label>
               {formData.times.map((time, index) => (
@@ -116,13 +116,13 @@ function AddMedicine() {
                     type="time"
                     value={time}
                     onChange={(e) => handleTimeChange(index, e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                    className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all outline-none color-scheme-dark"
                   />
                   {formData.times.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeTime(index)}
-                      className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors border border-transparent hover:border-red-100"
+                      className="p-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -132,7 +132,7 @@ function AddMedicine() {
               <button
                 type="button"
                 onClick={addTime}
-                className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 mt-2"
+                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 mt-2 transition-colors"
               >
                 <Plus className="w-4 h-4" /> Add another time
               </button>
@@ -141,7 +141,7 @@ function AddMedicine() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Current Stock (Pills/Units)</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Current Stock (Pills/Units)</label>
               <input
                 required
                 type="number"
@@ -150,13 +150,13 @@ function AddMedicine() {
                 value={formData.stock}
                 onChange={handleChange}
                 placeholder="e.g. 30"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-white focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all outline-none"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
-                <AlertTriangle className="w-4 h-4 text-amber-500" />
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                <AlertTriangle className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                 Refill Alert Threshold
               </label>
               <input
@@ -167,7 +167,7 @@ function AddMedicine() {
                 value={formData.refillThreshold}
                 onChange={handleChange}
                 placeholder="Alert when stock drops below e.g. 5"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-white focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-amber-500 dark:focus:border-amber-400 transition-all outline-none"
               />
             </div>
           </div>
@@ -175,7 +175,7 @@ function AddMedicine() {
           <div className="pt-4">
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-500/30"
+              className="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-medium py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30"
             >
               Save Medication
               <ArrowRight className="w-5 h-5" />
