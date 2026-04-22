@@ -1,0 +1,149 @@
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { deleteMedicine } from "../redux/medicineSlice";
+import { Trash2, Pill, AlertCircle, Plus, Activity, CalendarClock } from "lucide-react";
+
+function Medicines() {
+  const medicines = useSelector((state) => state.medicines.medicines);
+  const dispatch = useDispatch();
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this medication?")) {
+      dispatch(deleteMedicine(id));
+    }
+  };
+
+  return (
+    <div className="animate-fade-in">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
+            <Activity className="text-indigo-500 w-8 h-8" />
+            My Medicines
+          </h1>
+          <p className="text-slate-500 mt-2">Manage your medications and check their current stock.</p>
+        </div>
+        <Link
+          to="/add-medicine"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-lg shadow-indigo-500/30 self-start md:self-auto"
+        >
+          <Plus className="w-5 h-5" />
+          Add New
+        </Link>
+      </div>
+
+      {medicines.length === 0 ? (
+        <div className="glass-panel rounded-3xl p-12 text-center border border-slate-200">
+          <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Pill className="w-10 h-10 text-indigo-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-slate-800 mb-2">No medicines added yet</h3>
+          <p className="text-slate-500 mb-6 max-w-sm mx-auto">Start tracking your medications by adding your first one.</p>
+          <Link
+            to="/add-medicine"
+            className="inline-flex bg-white text-indigo-600 border border-indigo-200 hover:border-indigo-300 hover:bg-indigo-50 px-6 py-2.5 rounded-xl font-medium transition-all"
+          >
+            Add Medicine
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {medicines.map((med) => {
+            const isLowStock = med.stock <= med.refillThreshold;
+            
+            // Refill Prediction Logic: days_left = total_quantity / daily_dose
+            let pillsPerDay = 0;
+            if (med.frequency === "Daily") pillsPerDay = med.times.length;
+            else if (med.frequency === "Weekly") pillsPerDay = med.times.length / 7;
+
+            let refillDateStr = "N/A";
+            let daysLeftStr = "Unknown";
+            
+            if (pillsPerDay > 0) {
+              const daysLeft = Math.floor(med.stock / pillsPerDay);
+              daysLeftStr = `${daysLeft} days`;
+              const refillDate = new Date();
+              refillDate.setDate(refillDate.getDate() + daysLeft);
+              refillDateStr = refillDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+            
+            return (
+              <div key={med.id} className="glass-panel rounded-2xl p-6 relative group overflow-hidden border border-slate-200 hover:border-indigo-300 hover:shadow-xl transition-all duration-300">
+                {isLowStock && (
+                  <div className="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
+                )}
+                
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-3 rounded-xl ${isLowStock ? 'bg-amber-100 text-amber-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                      <Pill className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg text-slate-800">{med.name}</h3>
+                      <p className="text-sm text-slate-500 font-medium">{med.dosage}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(med.id)}
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Delete"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-3 mt-5">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-slate-500">Frequency</span>
+                    <span className="font-medium text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full">{med.frequency}</span>
+                  </div>
+                  
+                  {med.frequency !== "As Needed" && (
+                    <div className="flex justify-between items-start text-sm">
+                      <span className="text-slate-500">Times</span>
+                      <div className="flex flex-wrap justify-end gap-1 max-w-[60%]">
+                        {med.times.map((t, i) => (
+                          <span key={i} className="font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-3 mt-3 border-t border-slate-100">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-slate-500">Stock Remaining</span>
+                      <div className="flex items-center gap-2">
+                        {isLowStock && (
+                          <AlertCircle className="w-4 h-4 text-amber-500" />
+                        )}
+                        <span className={`font-bold text-lg ${isLowStock ? 'text-amber-600' : 'text-slate-700'}`}>
+                          {med.stock} <span className="text-sm font-normal text-slate-400">units</span>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {pillsPerDay > 0 && (
+                      <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                        <span className="text-xs text-slate-500 flex items-center gap-1.5">
+                          <CalendarClock className="w-3.5 h-3.5 text-blue-500" />
+                          Est. Refill Date
+                        </span>
+                        <span className="text-sm font-bold text-slate-700">
+                          {refillDateStr} <span className="text-xs font-normal text-slate-400">({daysLeftStr})</span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Medicines;
