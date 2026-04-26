@@ -5,7 +5,6 @@ import Dashboard from "./pages/Dashboard";
 import AddMedicine from "./pages/AddMedicine";
 import Medicines from "./pages/Medicines";
 import ApiData from "./pages/ApiData";
-import MedicineSearch from "./components/MedicineSearch";
 import Auth from "./pages/Auth";
 import "./App.css";
 
@@ -27,7 +26,6 @@ function App() {
             <Route path="/edit-medicine/:id" element={<AddMedicine />} />
             <Route path="/medicines" element={<Medicines />} />
             <Route path="/api-data" element={<ApiData />} />
-            <Route path="/medicine-search" element={<MedicineSearch />} />
           </Routes>
         </main>
       </div>
