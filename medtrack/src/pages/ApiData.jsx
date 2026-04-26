@@ -1,190 +1,263 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Search, Loader2, AlertCircle, Database } from 'lucide-react';
+import { Search, Loader2, AlertCircle, Database, Pill, AlertTriangle, Activity, Info, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { searchMedicine } from '../api';
 
 const ApiData = () => {
-  const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-  // Search and Pagination state
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  
+  const [candidates, setCandidates] = useState([]);
+  const [selectedMedicine, setSelectedMedicine] = useState(null);
+  const [isExactMatch, setIsExactMatch] = useState(false);
+  const [standardName, setStandardName] = useState('');
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  // 1. Fetch data on mount
+  // 1. Debounce search term (300ms)
   useEffect(() => {
-    const fetchPosts = async () => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // 2. Fetch data when debounced search term changes
+  useEffect(() => {
+    if (!debouncedSearchTerm.trim()) {
+      setCandidates([]);
+      setSelectedMedicine(null);
+      setStandardName('');
+      setIsExactMatch(false);
+      setHasSearched(false);
+      setError(null);
+      return;
+    }
+
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-        
-        // English translations for the first 10 Latin placeholder posts
-        const englishContent = {
-          1: { title: "The Importance of Routine", body: "Consistency is key when managing your daily schedule. Maintaining a proper routine ensures that you do not miss out on important tasks and responsibilities." },
-          2: { title: "Understanding Your Health", body: "It is essential to keep track of your well-being. Regular check-ups and monitoring can prevent complications and help you live a healthier life." },
-          3: { title: "Managing Daily Stress", body: "Stress can have a significant impact on your physical condition. Finding time to relax and performing breathing exercises can reduce anxiety levels." },
-          4: { title: "The Benefits of Hydration", body: "Drinking enough water every day is crucial for your body to function correctly. It helps in digestion, keeps your skin clear, and maintains energy." },
-          5: { title: "Healthy Sleep Habits", body: "A good night's sleep is the foundation of a productive day. Aim for seven to eight hours of uninterrupted rest to allow your body to recover." },
-          6: { title: "Nutrition and Diet", body: "Eating a balanced diet rich in vegetables and proteins provides the necessary fuel. Avoid excessive sugars and processed foods for better long-term health." },
-          7: { title: "Physical Activity", body: "Engaging in at least thirty minutes of exercise daily strengthens the heart and muscles. Even a light walk can significantly improve your mood." },
-          8: { title: "Mental Health Awareness", body: "Taking care of your mind is just as important as taking care of your body. Do not hesitate to seek support when you feel overwhelmed." },
-          9: { title: "Tracking Your Progress", body: "Using an application to log your daily activities can provide valuable insights into your habits, helping you make informed lifestyle adjustments." },
-          10: { title: "Consistency is Key", body: "The secret to long-term success in any endeavor is sticking to your plan. Small, continuous efforts yield massive results over time." }
-        };
-
-        // Display only first 10 items and translate them to English
-        const firstTen = response.data.slice(0, 10).map(post => ({
-          ...post,
-          title: englishContent[post.id]?.title || post.title,
-          body: englishContent[post.id]?.body || post.body
-        }));
-        
-        setPosts(firstTen);
-        setFilteredPosts(firstTen);
         setError(null);
+        setHasSearched(true);
+        setSelectedMedicine(null);
+        
+        const data = await searchMedicine(debouncedSearchTerm);
+        
+        setStandardName(data.standardName);
+        setIsExactMatch(data.exact);
+        
+        if (data.exact && data.results.length === 1) {
+          // Auto-select if there is exactly one exact match
+          setSelectedMedicine(data.results[0]);
+          setCandidates([]);
+        } else {
+          setCandidates(data.results);
+        }
       } catch (err) {
-        setError('Failed to fetch data from API');
+        setError('Failed to fetch data from APIs. Please try again later.');
         console.error('API Error:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPosts();
-  }, []);
+    fetchData();
+  }, [debouncedSearchTerm]);
 
-  // 2. Implement Debouncing for Search (500ms delay)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
+  // Helper function to truncate text safely
+  const truncateText = (text, maxLength = 150) => {
+    if (!text) return "Not available";
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
 
-    // Cleanup function runs if searchTerm changes before 500ms finishes
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  const handleSelectMedicine = (drug) => {
+    setSelectedMedicine(drug);
+  };
 
-  // 3. Filter posts when debounced search term changes
-  useEffect(() => {
-    if (debouncedSearchTerm.trim() === '') {
-      setFilteredPosts(posts);
-    } else {
-      const filtered = posts.filter(post => 
-        post.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
-      );
-      setFilteredPosts(filtered);
-    }
-    setCurrentPage(1); // Reset to first page on new search
-  }, [debouncedSearchTerm, posts]);
-
-  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
-  const currentPosts = filteredPosts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-500 dark:text-slate-400">
-        <Loader2 className="w-10 h-10 animate-spin mb-4 text-blue-500" />
-        <p className="text-lg font-medium">Loading API data...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-6 rounded-2xl flex flex-col items-center max-w-md text-center border border-red-100 dark:border-red-900/50">
-          <AlertCircle className="w-12 h-12 mb-4" />
-          <h2 className="text-lg font-bold mb-2">Error</h2>
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
+  const handleBackToList = () => {
+    setSelectedMedicine(null);
+  };
 
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in">
+    <div className="max-w-5xl mx-auto animate-fade-in pb-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
-          <Database className="text-blue-500 dark:text-blue-400 w-8 h-8" />
-          API Data Source
+        <h1 className="text-[2rem] font-extrabold text-[#1a202c] dark:text-white flex items-center gap-3">
+          <Database className="text-blue-500 dark:text-blue-400 w-8 h-8" strokeWidth={2.5} />
+          FDA Drug Database
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-2">
-          Fetching and filtering posts from JSONPlaceholder with a 500ms debounce.
+        <p className="text-[#64748b] dark:text-slate-400 mt-2 font-medium">
+          Search for medicines to view officially reported purposes, dosages, warnings, and side effects.
         </p>
       </div>
 
       {/* Search Input */}
       <div className="mb-8 relative group">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+          <Search className="h-6 w-6 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
         </div>
         <input
           type="text"
-          placeholder="Search posts by title..."
+          placeholder="Enter medicine name (e.g., Tylenol, Aspirin)..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-11 pr-4 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all outline-none shadow-sm dark:shadow-none"
+          className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-lg font-medium text-slate-800 dark:text-white focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all outline-none shadow-sm dark:shadow-none placeholder-slate-400"
         />
       </div>
 
-      {/* Results List */}
-      {filteredPosts.length === 0 ? (
-        <div className="glass-panel text-center py-12 rounded-3xl border border-transparent dark:border-slate-800">
-          <Search className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-700 dark:text-slate-300">No posts found</h3>
-          <p className="text-slate-500 dark:text-slate-400 mt-2">Try adjusting your search criteria</p>
+      {/* States: Loading, Error, Empty, No Data, Results */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-800 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-700">
+          <Loader2 className="w-12 h-12 animate-spin mb-4 text-blue-500" />
+          <p className="text-lg font-bold text-slate-700 dark:text-slate-300">Searching FDA Database...</p>
         </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {currentPosts.map((post) => (
-              <div 
-                key={post.id} 
-                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800 transition-all flex flex-col h-full"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-bold text-sm shrink-0">
-                    {post.id}
-                  </span>
-                  <h2 className="text-lg font-bold text-slate-800 dark:text-white capitalize line-clamp-1">
-                    {post.title}
-                  </h2>
+      ) : error ? (
+        <div className="bg-red-50 dark:bg-red-900/10 p-8 rounded-3xl border border-red-100 dark:border-red-900/30 flex flex-col items-center text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+          <h2 className="text-xl font-bold text-red-700 dark:text-red-400 mb-2">Something went wrong</h2>
+          <p className="text-red-600 dark:text-red-500 font-medium">{error}</p>
+        </div>
+      ) : !hasSearched ? (
+        <div className="text-center py-20 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
+          <Search className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">Start typing to search</h3>
+          <p className="text-[#64748b] dark:text-slate-400 mt-2 font-medium max-w-md mx-auto">
+            Results will appear here automatically using the official OpenFDA API.
+          </p>
+        </div>
+      ) : (!selectedMedicine && candidates.length === 0) ? (
+        <div className="text-center py-20 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
+          <FileText className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">No medicine data found</h3>
+          <p className="text-[#64748b] dark:text-slate-400 mt-2 font-medium max-w-md mx-auto">
+            We couldn't find any FDA drug labels matching "{standardName || debouncedSearchTerm}". Try a different name or spelling.
+          </p>
+        </div>
+      ) : selectedMedicine ? (
+        <div className="space-y-6 animate-fade-in">
+          {(candidates.length > 0 || !isExactMatch) && (
+            <button 
+              onClick={handleBackToList}
+              className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold hover:underline mb-2 px-2"
+            >
+              <ChevronLeft className="w-5 h-5" />
+              Back to Matches
+            </button>
+          )}
+          
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-slate-700 transition-colors duration-300">
+            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-700 pb-5 mb-5">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 shrink-0">
+                  <Pill className="w-6 h-6" strokeWidth={2.5} />
                 </div>
-                <p className="text-slate-600 dark:text-slate-400 line-clamp-3 text-sm leading-relaxed mt-1">
-                  {post.body}
+                <div>
+                  <h2 className="text-xl md:text-2xl font-extrabold text-[#1a202c] dark:text-white capitalize">
+                    {selectedMedicine.openfda?.brand_name?.[0] || selectedMedicine.openfda?.generic_name?.[0]}
+                  </h2>
+                  {selectedMedicine.openfda?.generic_name?.[0] && selectedMedicine.openfda?.generic_name?.[0].toLowerCase() !== (selectedMedicine.openfda?.brand_name?.[0] || '').toLowerCase() && (
+                    <p className="text-sm font-bold text-[#64748b] dark:text-slate-400 mt-1">
+                      Generic: {selectedMedicine.openfda?.generic_name?.[0]}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Purpose */}
+              <div className="space-y-2">
+                <h3 className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
+                  <Info className="w-5 h-5 text-blue-500" />
+                  Purpose (Benefits)
+                </h3>
+                <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50 h-[120px] overflow-y-auto custom-scrollbar">
+                  {truncateText(selectedMedicine.purpose?.[0] || selectedMedicine.indications_and_usage?.[0], 300)}
                 </p>
               </div>
-            ))}
+
+              {/* Dosage */}
+              <div className="space-y-2">
+                <h3 className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
+                  <Activity className="w-5 h-5 text-emerald-500" />
+                  Dosage
+                </h3>
+                <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50 h-[120px] overflow-y-auto custom-scrollbar">
+                  {truncateText(selectedMedicine.dosage_and_administration?.[0], 300)}
+                </p>
+              </div>
+
+              {/* Warnings */}
+              <div className="space-y-2">
+                <h3 className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
+                  <AlertTriangle className="w-5 h-5 text-amber-500" />
+                  Warnings
+                </h3>
+                <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 font-medium bg-amber-50/50 dark:bg-amber-900/10 p-4 rounded-2xl border border-amber-100 dark:border-amber-900/30 h-[120px] overflow-y-auto custom-scrollbar">
+                  {truncateText(selectedMedicine.warnings?.[0] || selectedMedicine.boxed_warning?.[0], 300)}
+                </p>
+              </div>
+
+              {/* Side Effects */}
+              <div className="space-y-2">
+                <h3 className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
+                  <AlertCircle className="w-5 h-5 text-rose-500" />
+                  Side Effects
+                </h3>
+                <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 font-medium bg-rose-50/50 dark:bg-rose-900/10 p-4 rounded-2xl border border-rose-100 dark:border-rose-900/30 h-[120px] overflow-y-auto custom-scrollbar">
+                  {truncateText(selectedMedicine.adverse_reactions?.[0], 300)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6 animate-fade-in">
+          <div className="mb-4 px-2">
+            <h2 className="text-lg font-bold text-slate-700 dark:text-slate-300">
+              Found {candidates.length} potential match{candidates.length > 1 ? 'es' : ''} for "{debouncedSearchTerm}"
+            </h2>
+            {standardName && standardName.toLowerCase() !== debouncedSearchTerm.toLowerCase() && (
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
+                Standardized by RxNorm as: <span className="text-blue-600 dark:text-blue-400 font-bold">{standardName}</span>
+              </p>
+            )}
+            {!isExactMatch && (
+              <p className="text-sm text-amber-600 dark:text-amber-400 font-medium mt-3 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-100 dark:border-amber-900/50 inline-flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                No exact match found. Please select the closest match below.
+              </p>
+            )}
           </div>
 
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 mt-10">
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium text-sm shadow-sm dark:shadow-none"
-              >
-                Previous
-              </button>
-              <span className="text-sm font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 px-4 py-2 rounded-lg border border-transparent dark:border-slate-700">
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium text-sm shadow-sm dark:shadow-none"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {candidates.map((drug, index) => {
+              const brandName = drug.openfda?.brand_name?.[0] || drug.openfda?.generic_name?.[0];
+              const genericName = drug.openfda?.generic_name?.[0];
+              
+              return (
+                <button
+                  key={drug.id || index}
+                  onClick={() => handleSelectMedicine(drug)}
+                  className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all text-left group flex items-center justify-between"
+                >
+                  <div className="pr-4">
+                    <h3 className="font-bold text-[#1a202c] dark:text-white capitalize text-[17px] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
+                      {brandName}
+                    </h3>
+                    {genericName && genericName.toLowerCase() !== brandName.toLowerCase() && (
+                      <p className="text-sm text-[#64748b] dark:text-slate-400 font-medium mt-1 line-clamp-1">
+                        Generic: {genericName}
+                      </p>
+                    )}
+                  </div>
+                  <ChevronRight className="w-6 h-6 text-slate-300 dark:text-slate-600 group-hover:text-blue-500 transition-colors shrink-0" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
       )}
     </div>
   );

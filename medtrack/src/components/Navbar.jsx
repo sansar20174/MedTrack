@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, LogOut } from "lucide-react";
 
-function Navbar() {
+function Navbar({ onLogout }) {
   const location = useLocation();
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -81,6 +81,17 @@ function Navbar() {
           >
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
+
+          {/* Logout Button */}
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="p-2.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          )}
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
