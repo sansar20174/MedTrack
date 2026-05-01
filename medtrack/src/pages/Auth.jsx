@@ -1,8 +1,35 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 
-const Auth = ({ onLogin }) => {
+function Auth(props) {
+  const onLogin = props.onLogin;
   const [isLogin, setIsLogin] = useState(true);
+
+  function handleSubmit(event) {
+    event.preventDefault(); // Stop page from reloading
+    onLogin();
+  }
+
+  function handleToggleMode() {
+    if (isLogin === true) {
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+    }
+  }
+
+  // Setup our texts depending on whether we are logging in or signing up
+  let welcomeText = "Welcome back! Please login to your account.";
+  let buttonText = "Sign In";
+  let bottomQuestion = "Don't have an account?";
+  let bottomActionText = "Sign up";
+
+  if (isLogin === false) {
+    welcomeText = "Create an account to track your medicines.";
+    buttonText = "Create Account";
+    bottomQuestion = "Already have an account?";
+    bottomActionText = "Log in";
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
@@ -20,13 +47,13 @@ const Auth = ({ onLogin }) => {
             MedTrack
           </h1>
           <p className="text-[#64748b] dark:text-slate-400 font-medium">
-            {isLogin ? 'Welcome back! Please login to your account.' : 'Create an account to track your medicines.'}
+            {welcomeText}
           </p>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); onLogin(); }} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           
-          {!isLogin && (
+          {isLogin === false && (
             <div className="space-y-1">
               <label className="text-sm font-bold text-[#1a202c] dark:text-slate-300 ml-1">Full Name</label>
               <div className="relative">
@@ -37,7 +64,7 @@ const Auth = ({ onLogin }) => {
                   type="text" 
                   className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-[#1a202c] dark:text-white outline-none font-medium placeholder-slate-400"
                   placeholder="John Doe"
-                  required={!isLogin}
+                  required={true}
                 />
               </div>
             </div>
@@ -53,7 +80,7 @@ const Auth = ({ onLogin }) => {
                 type="email" 
                 className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-[#1a202c] dark:text-white outline-none font-medium placeholder-slate-400"
                 placeholder="you@example.com"
-                required
+                required={true}
               />
             </div>
           </div>
@@ -68,10 +95,10 @@ const Auth = ({ onLogin }) => {
                 type="password" 
                 className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-[#1a202c] dark:text-white outline-none font-medium placeholder-slate-400"
                 placeholder="••••••••"
-                required
+                required={true}
               />
             </div>
-            {isLogin && (
+            {isLogin === true && (
               <div className="flex justify-end mt-2">
                 <a href="#" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline">Forgot password?</a>
               </div>
@@ -82,7 +109,7 @@ const Auth = ({ onLogin }) => {
             type="submit"
             className="w-full flex items-center justify-between bg-[#3b5998] hover:bg-[#2d4373] text-white px-6 py-4 rounded-xl font-semibold transition-colors shadow-lg shadow-blue-900/10 mt-2"
           >
-            <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
+            <span>{buttonText}</span>
             <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
           </button>
 
@@ -90,12 +117,12 @@ const Auth = ({ onLogin }) => {
 
         <div className="mt-8 text-center border-t border-slate-100 dark:border-slate-700 pt-6">
           <p className="text-[15px] text-[#64748b] dark:text-slate-400 font-medium">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
+            {bottomQuestion}
             <button 
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={handleToggleMode}
               className="ml-2 text-blue-600 dark:text-blue-400 font-bold hover:underline focus:outline-none"
             >
-              {isLogin ? 'Sign up' : 'Log in'}
+              {bottomActionText}
             </button>
           </p>
         </div>
@@ -103,6 +130,6 @@ const Auth = ({ onLogin }) => {
       </div>
     </div>
   );
-};
+}
 
 export default Auth;

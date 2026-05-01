@@ -1,0 +1,502 @@
+[
+  {
+    "id": "loc-1",
+    "name": "Paracetamol",
+    "genericName": "Acetaminophen",
+    "dosage": "500mg to 1000mg every 4-6 hours as needed.",
+    "uses": "Used to treat mild to moderate pain and to reduce fever.",
+    "warnings": "Do not exceed 4000mg per day. Taking too much can cause severe liver damage.",
+    "sideEffects": "Nausea, stomach pain, loss of appetite, itching, rash.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-2",
+    "name": "Amoxicillin",
+    "genericName": "Amoxicillin",
+    "dosage": "250mg to 500mg every 8 hours, or 500mg to 875mg every 12 hours.",
+    "uses": "Used to treat a wide variety of bacterial infections.",
+    "warnings": "Do not use if you are allergic to penicillin antibiotics. Finish the entire course of medication.",
+    "sideEffects": "Nausea, vomiting, diarrhea, rash.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-3",
+    "name": "Ibuprofen",
+    "genericName": "Ibuprofen",
+    "dosage": "200mg to 400mg every 4 to 6 hours as needed.",
+    "uses": "Used to reduce fever and treat pain or inflammation.",
+    "warnings": "Can increase your risk of fatal heart attack or stroke. Do not use just before or after heart bypass surgery.",
+    "sideEffects": "Upset stomach, mild heartburn, nausea, vomiting.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-4",
+    "name": "Amlodipine",
+    "genericName": "Amlodipine besylate",
+    "dosage": "2.5mg to 10mg once daily.",
+    "uses": "Used to treat high blood pressure and chest pain (angina).",
+    "warnings": "May cause swelling of ankles, feet, or hands. Do not stop taking suddenly.",
+    "sideEffects": "Fatigue, nausea, headache, dizziness, flushing.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-5",
+    "name": "Levothyroxine",
+    "genericName": "Levothyroxine sodium",
+    "dosage": "50mcg to 200mcg once daily, usually in the morning on an empty stomach.",
+    "uses": "Used to treat an underactive thyroid (hypothyroidism).",
+    "warnings": "Do not use for weight loss. Requires regular blood tests to adjust dosage.",
+    "sideEffects": "Headache, diarrhea, nausea, increased appetite, sweating, insomnia.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-6",
+    "name": "Metformin",
+    "genericName": "Metformin hydrochloride",
+    "dosage": "500mg to 2000mg daily, usually split into 2 or 3 doses.",
+    "uses": "Used to improve blood sugar control in people with type 2 diabetes.",
+    "warnings": "Risk of lactic acidosis (rare but serious). Do not drink alcohol while taking.",
+    "sideEffects": "Diarrhea, nausea, vomiting, metallic taste in mouth, abdominal pain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-7",
+    "name": "Atorvastatin",
+    "genericName": "Atorvastatin calcium",
+    "dosage": "10mg to 80mg once daily.",
+    "uses": "Used to lower cholesterol and triglycerides in the blood.",
+    "warnings": "Do not take with grapefruit juice. May cause muscle pain or weakness.",
+    "sideEffects": "Headache, digestive problems, muscle pain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-8",
+    "name": "Omeprazole",
+    "genericName": "Omeprazole",
+    "dosage": "20mg to 40mg once daily.",
+    "uses": "Used to reduce stomach acid for heartburn and GERD.",
+    "warnings": "Long-term use may reduce calcium absorption. Take on an empty stomach.",
+    "sideEffects": "Headache, diarrhea, nausea, stomach pain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-9",
+    "name": "Prednisone",
+    "genericName": "Prednisone",
+    "dosage": "Varies widely based on condition (5mg to 60mg daily or more).",
+    "uses": "Used as an anti-inflammatory and immunosuppressant for many conditions.",
+    "warnings": "Do not stop abruptly. May increase blood sugar and weaken bones with long-term use.",
+    "sideEffects": "Increased appetite, weight gain, mood changes, trouble sleeping, indigestion.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-10",
+    "name": "Albuterol",
+    "genericName": "Albuterol (Salbutamol)",
+    "dosage": "1 to 2 puffs every 4-6 hours as needed.",
+    "uses": "Used as a rescue inhaler for asthma attacks.",
+    "warnings": "Do not overuse. Contact doctor if you need it more often than prescribed.",
+    "sideEffects": "Shakiness, nervousness, rapid heartbeat, headache.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-11",
+    "name": "Aspirin",
+    "genericName": "Aspirin",
+    "dosage": "325 mg to 650 mg every 4 hours as needed for pain or fever; 81 mg daily for heart protection.",
+    "uses": "Reduces pain, fever, and inflammation. Also used in low doses to prevent blood clots and heart attacks.",
+    "warnings": "Do not give to children or teenagers with viral infections (risk of Reye's syndrome). Can increase risk of bleeding. Do not take with alcohol.",
+    "sideEffects": "Stomach upset, heartburn, nausea, easy bruising, ringing in the ears (tinnitus).",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-12",
+    "name": "Lisinopril",
+    "genericName": "Lisinopril",
+    "dosage": "2.5 mg to 40 mg once daily.",
+    "uses": "Treats high blood pressure and heart failure. Also used after a heart attack.",
+    "warnings": "Can cause a dry cough. May cause dizziness, especially when standing up. Do not use during pregnancy.",
+    "sideEffects": "Dizziness, headache, fatigue, cough, diarrhea, low blood pressure.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-13",
+    "name": "Simvastatin",
+    "genericName": "Simvastatin",
+    "dosage": "5 mg to 40 mg once daily in the evening.",
+    "uses": "Lowers high cholesterol levels to reduce the risk of heart disease and stroke.",
+    "warnings": "Can cause muscle pain or weakness (rhabdomyolysis). Do not take with grapefruit or grapefruit juice.",
+    "sideEffects": "Muscle pain, headache, nausea, diarrhea, abdominal pain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-14",
+    "name": "Amoxicillin/Clavulanate",
+    "genericName": "Amoxicillin/Clavulanate potassium",
+    "dosage": "500mg/125mg every 8 hours or 875mg/125mg every 12 hours.",
+    "uses": "Treats bacterial infections, including sinus infections, pneumonia, and ear infections.",
+    "warnings": "Tell your doctor if you have had a reaction to penicillin or cephalosporins. Can cause severe diarrhea.",
+    "sideEffects": "Diarrhea, nausea, vomiting, rash, yeast infections.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-15",
+    "name": "Hydrochlorothiazide",
+    "genericName": "Hydrochlorothiazide (HCTZ)",
+    "dosage": "12.5 mg to 25 mg once daily.",
+    "uses": "Treats high blood pressure and fluid retention (edema).",
+    "warnings": "Can increase potassium levels (monitor blood tests). May increase blood sugar and uric acid levels.",
+    "sideEffects": "Dizziness, lightheadedness, frequent urination, muscle cramps, nausea.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-16",
+    "name": " Sertraline",
+    "genericName": "Sertraline hydrochloride",
+    "dosage": "25 mg to 200 mg once daily.",
+    "uses": "Treats depression, anxiety, OCD, and PTSD.",
+    "warnings": "May increase suicidal thoughts, especially in young adults. Do not stop taking abruptly. Avoid alcohol.",
+    "sideEffects": "Nausea, diarrhea, insomnia, sexual dysfunction, headache, dizziness.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-17",
+    "name": "Gabapentin",
+    "genericName": "Gabapentin",
+    "dosage": "300 mg to 600 mg three times daily for nerve pain; dosage varies for seizures.",
+    "uses": "Treats nerve pain (neuropathy), restless legs syndrome, and seizures.",
+    "warnings": "May cause drowsiness and dizziness. Avoid driving until you know how it affects you. Can cause withdrawal symptoms if stopped suddenly.",
+    "sideEffects": "Drowsiness, dizziness, fatigue, ataxia (loss of coordination), weight gain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-18",
+    "name": "Furosemide",
+    "genericName": "Furosemide",
+    "dosage": "20 mg to 80 mg once or twice daily.",
+    "uses": "Treats edema (fluid retention) associated with heart failure, liver disease, and kidney disease.",
+    "warnings": "Can cause severe dehydration and electrolyte imbalances. Monitor potassium levels closely.",
+    "sideEffects": "Dizziness, dehydration, frequent urination, low potassium, muscle weakness, low blood pressure.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-19",
+    "name": "Montelukast",
+    "genericName": "Montelukast sodium",
+    "dosage": "10 mg once daily in the evening.",
+    "uses": "Prevents asthma attacks and treats allergy symptoms.",
+    "warnings": "Do not use for sudden asthma attacks. May cause mood or behavioral changes (rare).",
+    "sideEffects": "Headache, upper respiratory tract infection, abdominal pain, dizziness.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-20",
+    "name": "Warfarin",
+    "genericName": "Warfarin sodium",
+    "dosage": "Varies widely, monitored by INR testing.",
+    "uses": "Prevents blood clots in conditions like atrial fibrillation and deep vein thrombosis.",
+    "warnings": "Can cause severe bleeding. Requires regular INR blood tests. Many drug and food interactions (e.g., Vitamin K).",
+    "sideEffects": "Bleeding, bruising, nausea, diarrhea, hair loss.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-21",
+    "name": "Dolo 650",
+    "genericName": "Paracetamol",
+    "dosage": "650mg every 4 to 6 hours as needed.",
+    "uses": "Used to reduce fever and relieve mild to moderate pain.",
+    "warnings": "Do not exceed recommended dose. Overdose may cause liver damage.",
+    "sideEffects": "Nausea, rash, stomach pain.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-22",
+    "name": "Crocin Advance",
+    "genericName": "Paracetamol",
+    "dosage": "500mg to 650mg every 4 to 6 hours.",
+    "uses": "Used for fever, headache, body pain.",
+    "warnings": "Avoid excessive dosage to prevent liver damage.",
+    "sideEffects": "Nausea, allergic reaction, stomach upset.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-23",
+    "name": "Augmentin 625",
+    "genericName": "Amoxicillin + Clavulanic Acid",
+    "dosage": "One tablet every 8 to 12 hours as prescribed.",
+    "uses": "Treats bacterial infections such as respiratory, urinary, and skin infections.",
+    "warnings": "Complete full antibiotic course. Avoid if allergic to penicillin.",
+    "sideEffects": "Diarrhea, nausea, vomiting, rash.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-24",
+    "name": "Azithral 500",
+    "genericName": "Azithromycin",
+    "dosage": "500mg once daily for prescribed duration.",
+    "uses": "Used to treat bacterial infections including throat, chest, and skin infections.",
+    "warnings": "Complete full course. May affect heart rhythm in some patients.",
+    "sideEffects": "Nausea, diarrhea, stomach pain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-25",
+    "name": "Combiflam",
+    "genericName": "Ibuprofen + Paracetamol",
+    "dosage": "One tablet every 6 to 8 hours as needed.",
+    "uses": "Used for fever, inflammation, and pain relief.",
+    "warnings": "Avoid prolonged use. Can cause stomach ulcers or kidney issues.",
+    "sideEffects": "Stomach upset, nausea, dizziness.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-26",
+    "name": "Pantocid",
+    "genericName": "Pantoprazole",
+    "dosage": "40mg once daily before meals.",
+    "uses": "Used to treat acidity, GERD, and stomach ulcers.",
+    "warnings": "Long-term use may reduce vitamin B12 levels.",
+    "sideEffects": "Headache, diarrhea, stomach pain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-27",
+    "name": "Cetcip",
+    "genericName": "Cetirizine",
+    "dosage": "10mg once daily.",
+    "uses": "Used to treat allergies, sneezing, and itching.",
+    "warnings": "May cause drowsiness. Avoid driving after use.",
+    "sideEffects": "Sleepiness, dry mouth, fatigue.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-28",
+    "name": "Shelcal 500",
+    "genericName": "Calcium + Vitamin D3",
+    "dosage": "One tablet daily after meals.",
+    "uses": "Used for calcium deficiency and bone health.",
+    "warnings": "Do not exceed dosage unless prescribed.",
+    "sideEffects": "Constipation, bloating.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-29",
+    "name": "Glycomet",
+    "genericName": "Metformin",
+    "dosage": "500mg to 1000mg as prescribed.",
+    "uses": "Used to control blood sugar in type 2 diabetes.",
+    "warnings": "Monitor kidney function regularly.",
+    "sideEffects": "Nausea, diarrhea, stomach upset.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-30",
+    "name": "Telma 40",
+    "genericName": "Telmisartan",
+    "dosage": "40mg once daily.",
+    "uses": "Used to treat high blood pressure.",
+    "warnings": "Monitor blood pressure regularly.",
+    "sideEffects": "Dizziness, fatigue, back pain.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-31",
+    "name": "Amlokind",
+    "genericName": "Amlodipine",
+    "dosage": "5mg once daily.",
+    "uses": "Used for hypertension and chest pain.",
+    "warnings": "May cause swelling in feet or ankles.",
+    "sideEffects": "Dizziness, flushing, fatigue.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-32",
+    "name": "ORS Sachet",
+    "genericName": "Oral Rehydration Salts",
+    "dosage": "Mix in water and consume as directed.",
+    "uses": "Used to prevent dehydration due to diarrhea or vomiting.",
+    "warnings": "Use clean water only.",
+    "sideEffects": "Rare, may include bloating.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-33",
+    "name": "Volini Gel",
+    "genericName": "Diclofenac topical",
+    "dosage": "Apply 3 to 4 times daily.",
+    "uses": "Used for muscle pain, joint pain, and sprains.",
+    "warnings": "For external use only.",
+    "sideEffects": "Skin irritation, redness.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-34",
+    "name": "Benadryl Cough Syrup",
+    "genericName": "Diphenhydramine",
+    "dosage": "As directed on label.",
+    "uses": "Used for cough and cold symptoms.",
+    "warnings": "May cause drowsiness.",
+    "sideEffects": "Sleepiness, dry mouth.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-35",
+    "name": "Ecosprin 75",
+    "genericName": "Aspirin",
+    "dosage": "75mg once daily as prescribed.",
+    "uses": "Used to prevent blood clots and heart attacks.",
+    "warnings": "May increase bleeding risk.",
+    "sideEffects": "Stomach irritation, bleeding.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-36",
+    "name": "Zifi 200",
+    "genericName": "Cefixime",
+    "dosage": "200mg twice daily or as prescribed.",
+    "uses": "Used to treat bacterial infections such as respiratory tract, urinary tract, and ear infections.",
+    "warnings": "Complete full course. Avoid if allergic to cephalosporin antibiotics.",
+    "sideEffects": "Diarrhea, nausea, stomach pain, rash.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-37",
+    "name": "Sinarest",
+    "genericName": "Paracetamol + Chlorpheniramine + Phenylephrine",
+    "dosage": "One tablet every 6 to 8 hours.",
+    "uses": "Used for cold, nasal congestion, fever, and headache.",
+    "warnings": "May cause drowsiness. Avoid alcohol.",
+    "sideEffects": "Sleepiness, dry mouth, dizziness.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-38",
+    "name": "Meftal-Spas",
+    "genericName": "Mefenamic Acid + Dicyclomine",
+    "dosage": "One tablet as prescribed during pain episodes.",
+    "uses": "Used for abdominal cramps, menstrual pain, and spasms.",
+    "warnings": "Avoid prolonged use. May irritate stomach.",
+    "sideEffects": "Nausea, dry mouth, dizziness.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-39",
+    "name": "Dexorange",
+    "genericName": "Ferric Ammonium Citrate + Folic Acid + Vitamin B12",
+    "dosage": "As directed by physician.",
+    "uses": "Used to treat iron deficiency anemia.",
+    "warnings": "Keep away from children. Iron overdose can be dangerous.",
+    "sideEffects": "Constipation, dark stools, nausea.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-40",
+    "name": "Neurobion Forte",
+    "genericName": "Vitamin B Complex",
+    "dosage": "One tablet daily.",
+    "uses": "Used for vitamin B deficiency and nerve health.",
+    "warnings": "Do not exceed recommended dosage.",
+    "sideEffects": "Mild stomach upset, nausea.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-41",
+    "name": "Livogen",
+    "genericName": "Iron + Folic Acid",
+    "dosage": "One capsule daily after meals.",
+    "uses": "Used for iron deficiency and anemia.",
+    "warnings": "May cause constipation.",
+    "sideEffects": "Nausea, constipation, dark stools.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-42",
+    "name": "Rantac 150",
+    "genericName": "Ranitidine",
+    "dosage": "150mg once or twice daily.",
+    "uses": "Used to reduce stomach acid, acidity, and ulcers.",
+    "warnings": "Consult doctor for long-term use.",
+    "sideEffects": "Headache, constipation, nausea.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-43",
+    "name": "Cofsils Lozenges",
+    "genericName": "Amylmetacresol + Dichlorobenzyl Alcohol",
+    "dosage": "One lozenge every 2 to 3 hours.",
+    "uses": "Used for sore throat and cough relief.",
+    "warnings": "Do not exceed recommended use.",
+    "sideEffects": "Mild mouth irritation.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-44",
+    "name": "Digene",
+    "genericName": "Magnesium Hydroxide + Aluminum Hydroxide",
+    "dosage": "2 to 4 teaspoons after meals.",
+    "uses": "Used for acidity, indigestion, and heartburn.",
+    "warnings": "Avoid excessive use in kidney disease.",
+    "sideEffects": "Constipation or diarrhea.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-45",
+    "name": "Supradyn",
+    "genericName": "Multivitamins + Minerals",
+    "dosage": "One tablet daily.",
+    "uses": "Used to prevent vitamin deficiencies and improve energy.",
+    "warnings": "Avoid overdose of vitamins.",
+    "sideEffects": "Mild nausea, stomach discomfort.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-46",
+    "name": "Becosules",
+    "genericName": "Vitamin B Complex + Vitamin C",
+    "dosage": "One capsule daily.",
+    "uses": "Used for vitamin deficiencies and mouth ulcers.",
+    "warnings": "Use only recommended dosage.",
+    "sideEffects": "Nausea, stomach upset.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-47",
+    "name": "Clavam 625",
+    "genericName": "Amoxicillin + Clavulanic Acid",
+    "dosage": "One tablet every 8 to 12 hours.",
+    "uses": "Used for bacterial infections.",
+    "warnings": "Complete full antibiotic course.",
+    "sideEffects": "Diarrhea, nausea, rash.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-48",
+    "name": "Calpol 650",
+    "genericName": "Paracetamol",
+    "dosage": "650mg every 4 to 6 hours.",
+    "uses": "Used for fever and body pain.",
+    "warnings": "Avoid overdose.",
+    "sideEffects": "Nausea, rash.",
+    "prescription": "Over the counter (OTC)"
+  },
+  {
+    "id": "loc-49",
+    "name": "Moxikind-CV",
+    "genericName": "Amoxicillin + Clavulanic Acid",
+    "dosage": "As prescribed.",
+    "uses": "Used for bacterial infections.",
+    "warnings": "Complete course fully.",
+    "sideEffects": "Diarrhea, nausea.",
+    "prescription": "Prescription Required"
+  },
+  {
+    "id": "loc-50",
+    "name": "Allegra 120",
+    "genericName": "Fexofenadine",
+    "dosage": "120mg once daily.",
+    "uses": "Used for allergies, sneezing, and hives.",
+    "warnings": "Avoid fruit juice close to dosage time.",
+    "sideEffects": "Headache, nausea, dizziness.",
+    "prescription": "Over the counter (OTC)"
+  }
+]

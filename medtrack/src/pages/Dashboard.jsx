@@ -37,40 +37,93 @@ function Dashboard() {
   const today = new Date().toISOString().split("T")[0];
   const dateDisplay = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-  const todaysSchedule = [];
-  
-  medicines.forEach((med) => {
-    if (med.frequency === "Daily" || med.frequency === "Weekly") {
-      med.times.forEach((time) => {
-        todaysSchedule.push({
-          med,
-          time,
-          isTaken: med.history && med.history[today] && med.history[today].includes(time),
-        });
-      });
+  // Make a simple list of medicines that should be taken today.
+  function makeTodaySchedule() {
+    const schedule = [];
+
+    for (let i = 0; i < medicines.length; i++) {
+      const medicine = medicines[i];
+      const shouldShowToday = medicine.frequency === "Daily" || medicine.frequency === "Weekly";
+
+      if (shouldShowToday) {
+        for (let j = 0; j < medicine.times.length; j++) {
+          const time = medicine.times[j];
+          let alreadyTaken = false;
+
+          if (medicine.history && medicine.history[today]) {
+            alreadyTaken = medicine.history[today].includes(time);
+          }
+
+          schedule.push({
+            med: medicine,
+            time: time,
+            isTaken: alreadyTaken,
+          });
+        }
+      }
     }
-  });
 
-  todaysSchedule.sort((a, b) => a.time.localeCompare(b.time));
-  const lowStockMeds = medicines.filter(med => med.stock <= med.refillThreshold);
+    schedule.sort(function (firstItem, secondItem) {
+      return firstItem.time.localeCompare(secondItem.time);
+    });
 
-  const handleToggleTake = (medId, time, isTaken) => {
+    return schedule;
+  }
+
+  // Find medicines that are running low.
+  function getLowStockMedicines() {
+    const lowStockList = [];
+
+    for (let i = 0; i < medicines.length; i++) {
+      const medicine = medicines[i];
+
+      if (medicine.stock <= medicine.refillThreshold) {
+        lowStockList.push(medicine);
+      }
+    }
+
+    return lowStockList;
+  }
+
+  function handleToggleTake(medId, time, isTaken) {
     if (isTaken) {
       dispatch(untakeMedicine({ id: medId, date: today, time }));
     } else {
       dispatch(takeMedicine({ id: medId, date: today, time }));
     }
-  };
+  }
 
-  const completedCount = todaysSchedule.filter(s => s.isTaken).length;
+  function getCompletedCount(schedule) {
+    let count = 0;
+
+    for (let i = 0; i < schedule.length; i++) {
+      if (schedule[i].isTaken) {
+        count = count + 1;
+      }
+    }
+
+    return count;
+  }
+
+  function getProgressPercent(done, total) {
+    if (total === 0) {
+      return 0;
+    }
+
+    return Math.round((done / total) * 100);
+  }
+
+  const todaysSchedule = makeTodaySchedule();
+  const lowStockMeds = getLowStockMedicines();
+  const completedCount = getCompletedCount(todaysSchedule);
   const totalCount = todaysSchedule.length;
-  const progressPercent = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+  const progressPercent = getProgressPercent(completedCount, totalCount);
 
   const radius = 28;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progressPercent / 100) * circumference;
 
-  // Charts
+  // Data for the circle chart.
   const doughnutData = {
     labels: ['Taken', 'Pending/Missed'],
     datasets: [{
@@ -81,34 +134,118 @@ function Dashboard() {
     }],
   };
 
+  function getStockLabels() {
+    const labels = [];
+
+    if (medicines.length === 0) {
+      labels.push('No Data');
+      return labels;
+    }
+
+    for (let i = 0; i < medicines.length; i++) {
+      labels.push(medicines[i].name.substring(0, 10));
+    }
+
+    return labels;
+  }
+
+  function getStockNumbers() {
+    const stockNumbers = [];
+
+    if (medicines.length === 0) {
+      stockNumbers.push(0);
+      return stockNumbers;
+    }
+
+    for (let i = 0; i < medicines.length; i++) {
+      stockNumbers.push(medicines[i].stock);
+    }
+
+    return stockNumbers;
+  }
+
+  function getStockColors() {
+    const colors = [];
+
+    if (medicines.length === 0) {
+      colors.push('#e2e8f0');
+      return colors;
+    }
+
+    for (let i = 0; i < medicines.length; i++) {
+      const medicine = medicines[i];
+
+      if (medicine.stock <= medicine.refillThreshold) {
+        colors.push('#f59e0b');
+      } else {
+        colors.push('#3b82f6');
+      }
+    }
+
+    return colors;
+  }
+
+  // Data for the stock bar chart.
   const stockData = {
-    labels: medicines.length > 0 ? medicines.map(m => m.name.substring(0, 10)) : ['No Data'],
+    labels: getStockLabels(),
     datasets: [{
       label: 'Stock Remaining',
-      data: medicines.length > 0 ? medicines.map(m => m.stock) : [0],
-      backgroundColor: medicines.length > 0 
-        ? medicines.map(m => m.stock <= m.refillThreshold ? '#f59e0b' : '#3b82f6') 
-        : ['#e2e8f0'],
+      data: getStockNumbers(),
+      backgroundColor: getStockColors(),
       borderRadius: 6,
     }]
   };
 
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - 6 + i);
-    return d.toISOString().split('T')[0];
-  });
+  function getLastSevenDays() {
+    const days = [];
 
-  const weeklyUsageData = last7Days.map(date => {
-    let count = 0;
-    medicines.forEach(med => {
-      if (med.history && med.history[date]) count += med.history[date].length;
-    });
-    return count;
-  });
+    for (let i = 0; i < 7; i++) {
+      const day = new Date();
+      day.setDate(day.getDate() - 6 + i);
+      days.push(day.toISOString().split('T')[0]);
+    }
 
+    return days;
+  }
+
+  function getWeeklyUsage(days) {
+    const usage = [];
+
+    for (let i = 0; i < days.length; i++) {
+      const date = days[i];
+      let count = 0;
+
+      for (let j = 0; j < medicines.length; j++) {
+        const medicine = medicines[j];
+
+        if (medicine.history && medicine.history[date]) {
+          count = count + medicine.history[date].length;
+        }
+      }
+
+      usage.push(count);
+    }
+
+    return usage;
+  }
+
+  function getDayNames(days) {
+    const dayNames = [];
+
+    for (let i = 0; i < days.length; i++) {
+      const name = new Date(days[i]).toLocaleDateString('en-US', { weekday: 'short' });
+      dayNames.push(name);
+    }
+
+    return dayNames;
+  }
+
+  const last7Days = getLastSevenDays();
+  const weeklyUsageData = getWeeklyUsage(last7Days);
+
+  // Data for the weekly line chart.
   const lineData = {
-    labels: last7Days.map(date => new Date(date).toLocaleDateString('en-US', { weekday: 'short' })),
+    labels: getDayNames(last7Days),
     datasets: [{
       label: 'Medicines Taken',
       data: weeklyUsageData,
@@ -128,6 +265,80 @@ function Dashboard() {
       x: { grid: { display: false }, border: { display: false } }
     }
   };
+
+  function renderScheduleItems() {
+    const items = [];
+
+    for (let i = 0; i < todaysSchedule.length; i++) {
+      const item = todaysSchedule[i];
+      let boxClass = "flex items-center justify-between p-5 rounded-2xl transition-all border ";
+      let iconClass = "transition-colors ";
+      let titleClass = "font-extrabold text-lg ";
+
+      if (item.isTaken) {
+        boxClass = boxClass + "bg-[#ecfdf5] dark:bg-emerald-500/10 border-[#d1fae5] dark:border-emerald-500/20";
+        iconClass = iconClass + "text-[#10b981]";
+        titleClass = titleClass + "text-[#065f46] dark:text-emerald-400";
+      } else {
+        boxClass = boxClass + "bg-white dark:bg-slate-800 border-[#e2e8f0] dark:border-slate-700 shadow-sm dark:shadow-none";
+        iconClass = iconClass + "text-slate-300 dark:text-slate-600 hover:text-blue-500";
+        titleClass = titleClass + "text-[#1a202c] dark:text-white";
+      }
+
+      items.push(
+        <div
+          key={item.med.id + "-" + item.time + "-" + i}
+          className={boxClass}
+        >
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => handleToggleTake(item.med.id, item.time, item.isTaken)}
+              className={iconClass}
+            >
+              {item.isTaken ? <CheckCircle2 className="w-8 h-8" strokeWidth={2.5} /> : <Circle className="w-8 h-8" strokeWidth={2.5} />}
+            </button>
+
+            <div>
+              <h3 className={titleClass}>
+                {item.med.name}
+              </h3>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-sm font-medium text-[#64748b] dark:text-slate-400">{item.med.dosage}</span>
+                <span className="w-1 h-1 bg-[#cbd5e1] dark:bg-slate-600 rounded-full"></span>
+                <span className="text-sm font-bold text-[#64748b] dark:text-slate-400">
+                  {item.time}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return items;
+  }
+
+  function renderLowStockItems() {
+    const items = [];
+
+    for (let i = 0; i < lowStockMeds.length; i++) {
+      const medicine = lowStockMeds[i];
+
+      items.push(
+        <div key={medicine.id} className="p-4 bg-amber-50 dark:bg-amber-500/10 rounded-2xl border border-amber-100 dark:border-amber-500/20">
+          <h3 className="font-bold text-amber-900 dark:text-amber-500">{medicine.name}</h3>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-sm text-amber-700 dark:text-amber-600 font-medium">Only {medicine.stock} left</p>
+            <button className="text-xs bg-amber-200 dark:bg-amber-500/20 hover:bg-amber-300 dark:hover:bg-amber-500/30 text-amber-800 dark:text-amber-400 px-3 py-1.5 rounded-lg transition-colors font-bold">
+              Refill
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return items;
+  }
 
   return (
     <div className="animate-fade-in max-w-5xl mx-auto mt-6 space-y-10 pb-12 transition-colors duration-300">
@@ -178,40 +389,7 @@ function Dashboard() {
               </div>
             ) : (
               <div className="space-y-4">
-                {todaysSchedule.map((item, idx) => {
-                  return (
-                    <div 
-                      key={`${item.med.id}-${item.time}-${idx}`}
-                      className={`flex items-center justify-between p-5 rounded-2xl transition-all border ${
-                        item.isTaken 
-                          ? 'bg-[#ecfdf5] dark:bg-emerald-500/10 border-[#d1fae5] dark:border-emerald-500/20' 
-                          : 'bg-white dark:bg-slate-800 border-[#e2e8f0] dark:border-slate-700 shadow-sm dark:shadow-none'
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <button 
-                          onClick={() => handleToggleTake(item.med.id, item.time, item.isTaken)}
-                          className={`transition-colors ${item.isTaken ? 'text-[#10b981]' : 'text-slate-300 dark:text-slate-600 hover:text-blue-500'}`}
-                        >
-                          {item.isTaken ? <CheckCircle2 className="w-8 h-8" strokeWidth={2.5} /> : <Circle className="w-8 h-8" strokeWidth={2.5} />}
-                        </button>
-                        
-                        <div>
-                          <h3 className={`font-extrabold text-lg ${item.isTaken ? 'text-[#065f46] dark:text-emerald-400' : 'text-[#1a202c] dark:text-white'}`}>
-                            {item.med.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-sm font-medium text-[#64748b] dark:text-slate-400">{item.med.dosage}</span>
-                            <span className="w-1 h-1 bg-[#cbd5e1] dark:bg-slate-600 rounded-full"></span>
-                            <span className="text-sm font-bold text-[#64748b] dark:text-slate-400">
-                              {item.time}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                {renderScheduleItems()}
               </div>
             )}
           </div>
@@ -232,17 +410,7 @@ function Dashboard() {
               </div>
             ) : (
               <div className="space-y-3">
-                {lowStockMeds.map(med => (
-                  <div key={med.id} className="p-4 bg-amber-50 dark:bg-amber-500/10 rounded-2xl border border-amber-100 dark:border-amber-500/20">
-                    <h3 className="font-bold text-amber-900 dark:text-amber-500">{med.name}</h3>
-                    <div className="flex justify-between items-center mt-2">
-                      <p className="text-sm text-amber-700 dark:text-amber-600 font-medium">Only {med.stock} left</p>
-                      <button className="text-xs bg-amber-200 dark:bg-amber-500/20 hover:bg-amber-300 dark:hover:bg-amber-500/30 text-amber-800 dark:text-amber-400 px-3 py-1.5 rounded-lg transition-colors font-bold">
-                        Refill
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                {renderLowStockItems()}
               </div>
             )}
           </div>

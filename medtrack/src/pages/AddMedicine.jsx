@@ -7,12 +7,27 @@ import { Plus, Trash2, Pill, Clock, AlertTriangle, ArrowRight } from "lucide-rea
 function AddMedicine() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { id } = useParams();
+  
+  // Get the ID from the URL parameters
+  const params = useParams();
+  const id = params.id;
 
-  const existingMedicine = useSelector(state => 
-    id ? state.medicines.medicines.find(m => m.id === id) : null
-  );
+  // Get all medicines to find the one we might be editing
+  const allMedicines = useSelector(function (state) {
+    return state.medicines.medicines;
+  });
 
+  // Try to find the existing medicine if we have an ID
+  let existingMedicine = null;
+  if (id !== undefined) {
+    for (let i = 0; i < allMedicines.length; i++) {
+      if (allMedicines[i].id === id) {
+        existingMedicine = allMedicines[i];
+      }
+    }
+  }
+
+  // The state that holds all form inputs
   const [formData, setFormData] = useState({
     name: "",
     dosage: "",
@@ -22,64 +37,230 @@ function AddMedicine() {
     refillThreshold: "",
   });
 
-  useEffect(() => {
-    if (existingMedicine) {
-      setFormData({
+  // Load the existing medicine data into the form when the component starts
+  useEffect(function () {
+    if (existingMedicine !== null) {
+      let newFormData = {
         name: existingMedicine.name,
         dosage: existingMedicine.dosage,
         frequency: existingMedicine.frequency,
-        times: existingMedicine.times || ["08:00"],
+        times: existingMedicine.times,
         stock: existingMedicine.stock,
         refillThreshold: existingMedicine.refillThreshold,
-      });
+      };
+
+      // Fallback just in case times are empty
+      if (newFormData.times === undefined || newFormData.times === null) {
+        newFormData.times = ["08:00"];
+      }
+
+      setFormData(newFormData);
     }
   }, [existingMedicine]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // Handle any standard text input change
+  function handleChange(event) {
+    const inputName = event.target.name;
+    const inputValue = event.target.value;
 
-  const handleTimeChange = (index, value) => {
-    const newTimes = [...formData.times];
-    newTimes[index] = value;
-    setFormData((prev) => ({ ...prev, times: newTimes }));
-  };
-
-  const addTime = () => {
-    setFormData((prev) => ({ ...prev, times: [...prev.times, "12:00"] }));
-  };
-
-  const removeTime = (index) => {
-    const newTimes = formData.times.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, times: newTimes }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = {
-      ...formData,
-      stock: parseInt(formData.stock) || 0,
-      refillThreshold: parseInt(formData.refillThreshold) || 0,
+    // Create a manual copy of our form data
+    let newFormData = {
+      name: formData.name,
+      dosage: formData.dosage,
+      frequency: formData.frequency,
+      times: formData.times,
+      stock: formData.stock,
+      refillThreshold: formData.refillThreshold,
     };
 
-    if (id) {
-      dispatch(updateMedicine({ ...payload, id }));
+    // Update the correct property based on which input was typed in
+    if (inputName === "name") {
+      newFormData.name = inputValue;
+    }
+    if (inputName === "dosage") {
+      newFormData.dosage = inputValue;
+    }
+    if (inputName === "frequency") {
+      newFormData.frequency = inputValue;
+    }
+    if (inputName === "stock") {
+      newFormData.stock = inputValue;
+    }
+    if (inputName === "refillThreshold") {
+      newFormData.refillThreshold = inputValue;
+    }
+
+    setFormData(newFormData);
+  }
+
+  // Handle a change for a specific time input
+  function handleTimeChange(indexToUpdate, newTimeValue) {
+    let newFormData = {
+      name: formData.name,
+      dosage: formData.dosage,
+      frequency: formData.frequency,
+      times: [], // We will rebuild the times array
+      stock: formData.stock,
+      refillThreshold: formData.refillThreshold,
+    };
+
+    // Loop through existing times and update the matching index
+    for (let i = 0; i < formData.times.length; i++) {
+      if (i === indexToUpdate) {
+        newFormData.times.push(newTimeValue);
+      } else {
+        newFormData.times.push(formData.times[i]);
+      }
+    }
+
+    setFormData(newFormData);
+  }
+
+  // Add an extra time slot
+  function addTime() {
+    let newFormData = {
+      name: formData.name,
+      dosage: formData.dosage,
+      frequency: formData.frequency,
+      times: [],
+      stock: formData.stock,
+      refillThreshold: formData.refillThreshold,
+    };
+
+    // Copy old times
+    for (let i = 0; i < formData.times.length; i++) {
+      newFormData.times.push(formData.times[i]);
+    }
+
+    // Add a new default time
+    newFormData.times.push("12:00");
+
+    setFormData(newFormData);
+  }
+
+  // Remove a specific time slot
+  function removeTime(indexToRemove) {
+    let newFormData = {
+      name: formData.name,
+      dosage: formData.dosage,
+      frequency: formData.frequency,
+      times: [],
+      stock: formData.stock,
+      refillThreshold: formData.refillThreshold,
+    };
+
+    // Keep only the times that do not match the index to remove
+    for (let i = 0; i < formData.times.length; i++) {
+      if (i !== indexToRemove) {
+        newFormData.times.push(formData.times[i]);
+      }
+    }
+
+    setFormData(newFormData);
+  }
+
+  // When the user clicks save
+  function handleSubmit(event) {
+    // Stop the page from reloading
+    event.preventDefault();
+
+    // Prepare the final data to save
+    let payload = {
+      name: formData.name,
+      dosage: formData.dosage,
+      frequency: formData.frequency,
+      times: formData.times,
+      stock: parseInt(formData.stock),
+      refillThreshold: parseInt(formData.refillThreshold),
+    };
+
+    // Check if the numbers are valid, otherwise set to 0
+    if (isNaN(payload.stock) === true) {
+      payload.stock = 0;
+    }
+    if (isNaN(payload.refillThreshold) === true) {
+      payload.refillThreshold = 0;
+    }
+
+    // Save or update via Redux
+    if (id !== undefined) {
+      payload.id = id;
+      dispatch(updateMedicine(payload));
     } else {
       dispatch(addMedicine(payload));
     }
+
+    // Go back to the list
     navigate("/medicines");
-  };
+  }
+
+  // Draw the time inputs dynamically
+  function renderTimeInputs() {
+    let timeInputs = [];
+
+    for (let i = 0; i < formData.times.length; i++) {
+      let timeValue = formData.times[i];
+      let showRemoveButton = false;
+
+      // Only show remove button if there is more than 1 time
+      if (formData.times.length > 1) {
+        showRemoveButton = true;
+      }
+
+      timeInputs.push(
+        <div key={i} className="flex gap-3">
+          <input
+            required
+            type="time"
+            value={timeValue}
+            onChange={function (event) {
+              handleTimeChange(i, event.target.value);
+            }}
+            className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all outline-none color-scheme-dark"
+          />
+          {showRemoveButton === true && (
+            <button
+              type="button"
+              onClick={function () {
+                removeTime(i);
+              }}
+              className="p-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+      );
+    }
+
+    return timeInputs;
+  }
+
+  // Change text depending on whether we add or edit
+  let pageTitle = "Add New Medicine";
+  let pageDescription = "Enter the details of your medication to track it automatically.";
+  let buttonText = "Save Medication";
+
+  if (id !== undefined) {
+    pageTitle = "Edit Medicine";
+    pageDescription = "Update the details of your medication.";
+    buttonText = "Save Changes";
+  }
+
+  let showReminderTimes = false;
+  if (formData.frequency !== "As Needed") {
+    showReminderTimes = true;
+  }
 
   return (
     <div className="max-w-2xl mx-auto animate-fade-in transition-colors duration-300">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
           <Pill className="text-blue-500 dark:text-blue-400 w-8 h-8" />
-          {id ? "Edit Medicine" : "Add New Medicine"}
+          {pageTitle}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mt-2">
-          {id ? "Update the details of your medication." : "Enter the details of your medication to track it automatically."}
+          {pageDescription}
         </p>
       </div>
 
@@ -127,32 +308,15 @@ function AddMedicine() {
             </select>
           </div>
 
-          {formData.frequency !== "As Needed" && (
+          {showReminderTimes === true && (
             <div className="space-y-3 p-5 rounded-xl bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/50">
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-blue-500 dark:text-blue-400" />
                 Reminder Times
               </label>
-              {formData.times.map((time, index) => (
-                <div key={index} className="flex gap-3">
-                  <input
-                    required
-                    type="time"
-                    value={time}
-                    onChange={(e) => handleTimeChange(index, e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all outline-none color-scheme-dark"
-                  />
-                  {formData.times.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeTime(index)}
-                      className="p-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  )}
-                </div>
-              ))}
+              
+              {renderTimeInputs()}
+
               <button
                 type="button"
                 onClick={addTime}
@@ -201,7 +365,7 @@ function AddMedicine() {
               type="submit"
               className="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-medium py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30"
             >
-              {id ? "Save Changes" : "Save Medication"}
+              {buttonText}
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>
